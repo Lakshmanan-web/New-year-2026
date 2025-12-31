@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Family Evolution 2026</title>
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #050505; font-family: 'Georgia', serif; }
+        
+        #canvas { position: fixed; top: 0; left: 0; z-index: 1; }
+
+        .card {
+            position: relative;
+            z-index: 10;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85%;
+            max-width: 380px;
+            padding: 60px 20px;
+            background: rgba(10, 10, 10, 0.4);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-radius: 2px; /* Minimalist sharp edges */
+            border-left: 1px solid gold;
+            border-right: 1px solid gold;
+            text-align: center;
+        }
+
+        .header-meta {
+            color: gold;
+            font-size: 0.7rem;
+            letter-spacing: 8px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            color: white;
+            line-height: 1.4;
+            font-weight: 300;
+            margin: 0;
+            font-style: italic;
+            background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fcf6ba, #aa771c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .family-btn {
+            margin-top: 50px;
+            padding: 15px 30px;
+            background: transparent;
+            border: 1px solid gold;
+            color: gold;
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.4s;
+        }
+
+        .gold-particle {
+            position: fixed;
+            pointer-events: none;
+            background: gold;
+            border-radius: 50%;
+            z-index: 1000;
+            animation: drift 2s ease-out forwards;
+        }
+
+        @keyframes drift {
+            0% { transform: translate(0,0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas"></canvas>
+
+    <div class="card">
+        <div class="header-meta">Chapter 2026</div>
+        <h1>Our Story<br>Continues...</h1>
+        <button class="family-btn" id="loveBtn">Sync Hearts ❤️</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const btn = document.getElementById('loveBtn');
+        let particles = [];
+
+        function init() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        function createBackground() {
+            ctx.fillStyle = "rgba(5, 5, 5, 0.2)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            for(let i=0; i<3; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    v: Math.random() * 0.5,
+                    s: Math.random() * 2
+                });
+            }
+
+            ctx.fillStyle = "gold";
+            particles.forEach((p, i) => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.s, 0, Math.PI*2);
+                ctx.fill();
+                p.y -= p.v;
+                if(p.y < 0) particles.splice(i, 1);
+            });
+            requestAnimationFrame(createBackground);
+        }
+
+        function burst(e) {
+            const x = e.clientX || (e.touches ? e.touches[0].clientX : window.innerWidth/2);
+            const y = e.clientY || (e.touches ? e.touches[0].clientY : window.innerHeight/2);
+
+            for(let i=0; i<40; i++) {
+                const p = document.createElement('div');
+                p.className = 'gold-particle';
+                const size = Math.random() * 4 + 'px';
+                p.style.width = size;
+                p.style.height = size;
+                p.style.left = x + 'px';
+                p.style.top = y + 'px';
+                p.style.setProperty('--x', (Math.random() - 0.5) * 500 + 'px');
+                p.style.setProperty('--y', (Math.random() - 0.5) * 500 + 'px');
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), 2000);
+            }
+        }
+
+        btn.addEventListener('mousedown', burst);
+        btn.addEventListener('touchstart', (e) => { e.preventDefault(); burst(e); });
+
+        window.addEventListener('resize', init);
+        init();
+        createBackground();
+    </script>
+</body>
+</html>
